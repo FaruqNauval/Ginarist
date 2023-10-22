@@ -1,15 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image, ImageBackground, TextInput } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, ImageBackground, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Notification, Receipt21, Clock, Message, SearchNormal, Like1, ArrowRight2 } from 'iconsax-react-native';
-import { fontType, colors } from './src/theme';
-export default function App() {
+import { KategoriTariList } from './data';
+import { ListKategoriTari } from './src/components';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+function HomeScreen() {
   const [searchText, setSearchText] = useState('');
   const handleSearchPress = (text) => {
     setSearchText(text);
@@ -27,9 +25,9 @@ export default function App() {
           />
         </View>
       </View>
-      <View style={{ paddingHorizontal: 24 }}>
+      <View style={{ paddingHorizontal: 24, marginBottom: 10, }}>
         <View style={styles.searchContainer}>
-          <SearchNormal color={colors.black()} variant="Linear" size={24} style={styles.icon} />
+          <SearchNormal color={'black'} variant="Linear" size={24} style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Cari..."
@@ -39,15 +37,47 @@ export default function App() {
           />
         </View>
       </View>
-      <View style={styles.listCategory}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-
-
-        </ScrollView>
-      </View>
       <ListBlog />
 
     </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            let rn = route.name
+
+            if (rn === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (rn === 'Settings') { iconName = focused ? 'settings' : 'settings-outline'; }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'gray',
+          LabelStyle: { paddingBottom: 10, fontSize: 10 },
+          style: { padding: `` }
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -55,126 +85,8 @@ const ListBlog = () => {
   return (
     <ScrollView>
       <View style={styles.listBlog}>
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          contentContainerStyle={{ gap: 15 }}>
-          <View style={{ ...itemHorizontal.cardItem, marginLeft: 24 }}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: 'https://images.unsplash.com/photo-1642378327252-8c8121abaf70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>
-                    Tari Tradisi
-                  </Text>
-                  {/* <Text style={itemHorizontal.cardText}>Nov 10, 2023</Text> */}
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21 color={colors.white()} variant="Linear" size={20} />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: 'https://images.unsplash.com/photo-1537365587684-f490102e1225?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>
-                    Tari Modern
-                  </Text>
-                  {/* <Text style={itemHorizontal.cardText}>Nov 10, 2023</Text> */}
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21 color={colors.white()} variant="Linear" size={20} />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: 'https://i.pinimg.com/564x/27/e2/2c/27e22c7a2a1f3bb0ec6bb9c928037eb5.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>
-                    Tari Kreasi
-                  </Text>
-                  {/* <Text style={itemHorizontal.cardText}>Nov 10, 2023</Text> */}
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21 color={colors.white()} variant="Linear" size={20} />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: 'https://i.pinimg.com/564x/74/c2/da/74c2da23e1c11ba9223a8e1b148f0f5e.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>
-                    Musik
-                  </Text>
-                  <Text style={itemHorizontal.cardText}>Nov 10, 2023</Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21 color={colors.white()} variant="Linear" size={20} />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={{ ...itemHorizontal.cardItem, marginRight: 24 }}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: 'https://i.pinimg.com/564x/da/19/9c/da199cd228817dbd808cad94c6793609.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>
-                    Kostum Tarian
-                  </Text>
-                  {/* <Text style={itemHorizontal.cardText}>Nov 10, 2023</Text> */}
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21 color={colors.white()} variant="Linear" size={20} />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-        </ScrollView>
+        <ListKategoriTari data={KategoriTariList} />
+        <ListSeniRupa />
         <View style={itemVertical.listCard}>
           <View style={itemVertical.cardItem}>
             <Image
@@ -195,24 +107,8 @@ const ListBlog = () => {
                     Properti Tari
                   </Text>
                 </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
               </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
-                <Message
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
-              </View>
+
             </View>
           </View>
           <View style={itemVertical.cardItem}>
@@ -231,26 +127,9 @@ const ListBlog = () => {
                 <View style={{ gap: 5, width: '70%' }}>
                   <Text style={itemVertical.cardCategory}>Terkini</Text>
                   <Text style={itemVertical.cardTitle}>
-                    Tranding
+                    Trending
                   </Text>
                 </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
-                <Message
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
               </View>
             </View>
           </View>
@@ -273,22 +152,17 @@ const ListBlog = () => {
                     Galeri Tari
                   </Text>
                 </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
               </View>
               <View style={itemVertical.cardInfo}>
                 <Clock
                   size={10}
                   variant="Linear"
-                  color={colors.grey(0.6)}
+                  color={'rgb(128,128,128)'}
                 />
                 <Message
                   size={10}
                   variant="Linear"
-                  color={colors.grey(0.6)}
+                  color={'rgb(128,128,128)'}
                 />
               </View>
             </View>
@@ -310,23 +184,6 @@ const ListBlog = () => {
                   <Text style={itemVertical.cardCategory}>videos</Text>
                   <Text style={itemVertical.cardTitle}>Video Tarian</Text>
                 </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
-                <Message
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
               </View>
             </View>
           </View>
@@ -344,35 +201,15 @@ const ListBlog = () => {
                   justifyContent: 'space-between',
                 }}>
                 <View style={{ gap: 5, width: '70%' }}>
-                  <Text style={itemVertical.cardCategory}>Show</Text>
+                  <Text style={itemVertical.cardCategory}>Music</Text>
                   <Text style={itemVertical.cardTitle}>
-                    Jadwal Tari Ginarist
+                    Lagu Tarian Indonesia
                   </Text>
                 </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
-                <Text style={itemVertical.cardText}>Contact for more</Text>
-                <Message
-                  size={10}
-                  variant="Linear"
-                  color={colors.grey(0.6)}
-                />
               </View>
             </View>
           </View>
         </View>
-        <ListSeniRupa />
-
       </View>
     </ScrollView>
   );
@@ -385,24 +222,24 @@ const itemVertical = StyleSheet.create({
     gap: 15,
   },
   cardItem: {
-    backgroundColor: colors.blue(0.03),
+    backgroundColor: 'rgba(0,0,255,0.1)',
     flexDirection: 'row',
     borderRadius: 10,
   },
   cardCategory: {
-    color: colors.blue(),
+    color: 'blue',
     fontSize: 10,
-    fontFamily: fontType['Pjs-SemiBold'],
+
   },
   cardTitle: {
     fontSize: 14,
-    fontFamily: fontType['Pjs-Bold'],
-    color: colors.black(),
+
+    color: 'black',
   },
   cardText: {
     fontSize: 15,
-    fontFamily: fontType['Pjs-Medium'],
-    color: colors.blue(0.6),
+
+    color: 'blue',
   },
   cardImage: {
     width: 94,
@@ -445,19 +282,19 @@ const itemHorizontal = StyleSheet.create({
     maxWidth: '60%',
   },
   cardTitle: {
-    fontFamily: fontType['Pjs-Bold'],
+
     fontSize: 14,
-    color: colors.white(),
+    color: 'white',
   },
   cardText: {
     fontSize: 10,
-    color: colors.white(),
-    fontFamily: fontType['Pjs-Medium'],
+    color: 'white',
+
   },
   cardIcon: {
-    backgroundColor: colors.white(0.33),
+    backgroundColor: 'white',
     padding: 5,
-    borderColor: colors.white(),
+    borderColor: 'white',
     borderWidth: 0.5,
     borderRadius: 5,
   },
@@ -476,12 +313,12 @@ const styles = StyleSheet.create({
   textSeni: {
     fontSize: 20,
     marginRight: 8,
-    fontFamily: fontType['Pjs-ExtraBold'],
-    color: colors.black(),
+
+    color: 'black',
   },
   container: {
     flex: 1,
-    backgroundColor: colors.white(),
+    backgroundColor: 'white',
   },
   profileContainer: {
     marginLeft: 16, // Mengatur jarak antara notifikasi dan foto profil
@@ -507,6 +344,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
+    color: 'black'
   },
   header: {
     paddingHorizontal: 24,
@@ -520,8 +358,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: fontType['Pjs-ExtraBold'],
-    color: colors.black(),
+
+    color: 'black',
   },
   listCategory: {
     paddingVertical: 10,
@@ -536,7 +374,7 @@ const ListSeniRupa = () => {
     <View style={styles.headerSeniDaerah}>
       <View style={styles.seniPopulerTitleContainer}>
         <Text style={styles.textSeni}>List Kota Beragam Budaya</Text>
-        <ArrowRight2 color={colors.black()} variant="Linear" size={20} />
+        <ArrowRight2 color={'black'} variant="Linear" size={20} />
       </View>
       <ScrollView contentContainerStyle={listSeniRupa.scrollViewContent}>
         <View style={listSeniRupa.card}>
@@ -547,7 +385,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Malang</Text>
           </ImageBackground>
@@ -560,7 +398,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Jakarta</Text>
           </ImageBackground>
@@ -573,7 +411,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Yogyakarta</Text>
           </ImageBackground>
@@ -586,7 +424,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Bali</Text>
           </ImageBackground>
@@ -599,7 +437,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Makassar</Text>
           </ImageBackground>
@@ -612,7 +450,7 @@ const ListSeniRupa = () => {
             style={listSeniRupa.image}
           >
             <View style={listSeniRupa.cardIcon}>
-              <Like1 color={colors.white()} variant="Linear" size={24} />
+              <Like1 color={'white'} variant="Linear" size={24} />
             </View>
             <Text style={listSeniRupa.cardTitle}>Kalimantan</Text>
           </ImageBackground>
@@ -627,7 +465,7 @@ const listSeniRupa = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    margin: 8,
+    marginTop: 8,
   },
   card: {
     width: '48%', // 48% dari lebar layar untuk 2 kolom (dengan jarak di antara)
@@ -643,7 +481,7 @@ const listSeniRupa = StyleSheet.create({
     fontSize: 16,
     padding: 8,
     fontSize: 14,
-    fontFamily: fontType['Pjs-Bold'],
+
     color: 'white',
     position: 'absolute',
     color: 'white',
@@ -669,14 +507,14 @@ const category = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 25,
     alignItems: 'center',
-    backgroundColor: colors.grey(0.08),
+    backgroundColor: 'rgba(255,255,255,0.2)',
     marginHorizontal: 5
   },
   title: {
-    fontFamily: fontType['Pjs-SemiBold'],
+
     fontSize: 14,
     lineHeight: 18,
-    color: colors.grey(),
+    color: 'grey',
   },
 })
 
