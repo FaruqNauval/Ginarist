@@ -1,15 +1,17 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { BlogList, ExploreTrendingList, KategoriTariList } from '../../../data';
+import {ExploreTrendingList, KategoriTariList } from '../../../data';
 import { ListExploreCircle } from '../../components';
 import { AddCircle, Like1, SearchNormal, SearchNormal1 } from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
+const navigation = useNavigation();
 const ListSeniRupa = () => {
   return (
     <View style={styles.headerSeniDaerah}>
       <ScrollView contentContainerStyle={listSeniRupa.scrollViewContent}>
         {ExploreTrendingList.map((item, index) => (
           <View key={index} style={listSeniRupa.card}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('ExploreDetail', {blogId: item.id})}>
               <ImageBackground
                 source={{
                   uri: item.image,
@@ -25,7 +27,7 @@ const ListSeniRupa = () => {
 
   );
 };
-const Discover = () => {
+const Explore = () => {
   const [searchText, setSearchText] = useState('');
   const handleSearchPress = (text) => {
     setSearchText(text);
@@ -59,7 +61,7 @@ const Discover = () => {
     </View>
   );
 };
-export default Discover;
+export default Explore;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

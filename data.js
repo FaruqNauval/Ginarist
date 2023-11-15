@@ -69,26 +69,46 @@ export const ExploreTrendingList = [
     id: 1,
     image:
       'https://images.unsplash.com/photo-1642378327252-8c8121abaf70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80',
+    title: 'Tari ...',
+    category: 'Tari',
+    uploadBy: 'Andi',
+    content: 'Seseorang ....'
   },
   {
     id: 2,
     image:
       'https://i.pinimg.com/564x/c3/a7/99/c3a7997455f2364efa0740f22d072383.jpg',
+    title: 'Tari Kecak',
+    category: 'Tari',
+    uploadBy: 'Andi',
+    content: 'Seseorang ....'
   },
   {
     id: 3,
     image:
       'https://i.pinimg.com/564x/27/e2/2c/27e22c7a2a1f3bb0ec6bb9c928037eb5.jpg',
+    title: 'Tari ...',
+    category: 'Tari',
+    uploadBy: 'Andi',
+    content: 'Seseorang ....'
   },
   {
     id: 4,
     image:
       'https://i.pinimg.com/564x/7b/11/81/7b1181fe7eb73ffa639e7c88b098185e.jpg',
+    title: 'Monumen Jogja',
+    category: 'Bangunan',
+    uploadBy: 'Andi',
+    content: 'Bangunan ...'
   },
   {
     id: 5,
     image:
       'https://i.pinimg.com/736x/ed/95/17/ed95172c2a091b91e2a33755d6db3722.jpg',
+    title: 'Tari ...',
+    category: 'Tari',
+    uploadBy: 'Andi',
+    content: 'Seseorang ....'
   },
 
 ];
