@@ -41,7 +41,7 @@ const ExploreDetail = ({ route }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <View style={{ backgroundColor: 'black', borderRadius: 50, padding: 10 }}>
             <ArrowLeft
-              color={'white'}
+              color={'black'}
               variant="Linear"
               size={24}
             />
