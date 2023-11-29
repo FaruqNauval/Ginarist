@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, FlatList, TextInput, ImageBackgroun
 import React, { useState } from 'react';
 import {ExploreTrendingList, KategoriTariList } from '../../../data';
 import { ListExploreCircle } from '../../components';
-import { AddCircle, Like1, SearchNormal, SearchNormal1 } from 'iconsax-react-native';
+import { AddCircle, Edit, Like1, SearchNormal, SearchNormal1 } from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 const navigation = useNavigation();
 const ListSeniRupa = () => {
@@ -58,6 +58,12 @@ const Explore = () => {
           <ListSeniRupa />
         </View>
       </ScrollView>
+      <TouchableOpacity
+  style={styles.floatingButton}
+  onPress={() => navigation.navigate("AddFeed")}
+>
+  <Edit color={"white"} variant="Linear" size={20} />
+</TouchableOpacity>
     </View>
   );
 };
@@ -66,6 +72,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  floatingButton: {
+    backgroundColor: "blue",
+    padding: 15,
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    borderRadius: 10,
+    shadowColor: "blue",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+
+    elevation: 8,
   },
   header: {
     paddingHorizontal: 24,
