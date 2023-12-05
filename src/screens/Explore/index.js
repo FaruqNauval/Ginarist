@@ -1,27 +1,63 @@
-import { StyleSheet, Text, View, ScrollView, FlatList, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import {ExploreTrendingList, KategoriTariList } from '../../../data';
+import { StyleSheet, Text, View, ScrollView, FlatList, TextInput, ImageBackground, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { ExploreTrendingList, KategoriTariList } from '../../../data';
 import { ListExploreCircle } from '../../components';
 import { AddCircle, Edit, Like1, SearchNormal, SearchNormal1 } from 'iconsax-react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 const navigation = useNavigation();
+import axios from 'axios';
 const ListSeniRupa = () => {
+  const [loading, setLoading] = useState(true);
+  const [blogData, setBlogData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const getDataBlog = async () => {
+    try {
+      const response = await axios.get(
+        'https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore',
+      );
+      setBlogData(response.data);
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      getDataBlog()
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDataBlog();
+    }, [])
+  );
   return (
     <View style={styles.headerSeniDaerah}>
-      <ScrollView contentContainerStyle={listSeniRupa.scrollViewContent}>
-        {ExploreTrendingList.map((item, index) => (
-          <View key={index} style={listSeniRupa.card}>
-            <TouchableOpacity onPress={()=>navigation.navigate('ExploreDetail', {blogId: item.id})}>
-              <ImageBackground
-                source={{
-                  uri: item.image,
-                }}
-                style={listSeniRupa.image}
-              >
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
-        ))}
+      <ScrollView contentContainerStyle={listSeniRupa.scrollViewContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        {loading ? (
+          <ActivityIndicator size={'large'} color={'blue'} />
+        ) : (
+          blogData.map((item, index) => (
+            <View key={index} style={listSeniRupa.card}>
+              <TouchableOpacity onPress={() => navigation.navigate('ExploreDetail', { blogId: item.id })}>
+                <ImageBackground
+                  source={{
+                    uri: item.image,
+                  }}
+                  style={listSeniRupa.image}
+                >
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
 
@@ -59,11 +95,11 @@ const Explore = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
-  style={styles.floatingButton}
-  onPress={() => navigation.navigate("AddFeed")}
->
-  <Edit color={"white"} variant="Linear" size={20} />
-</TouchableOpacity>
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate("AddFeed")}
+      >
+        <Edit color={"white"} variant="Linear" size={20} />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -4,4 +4,5 @@ import Explore from "./Explore";
 import Profile from "./Profile";
 import ExploreDetail from "./ExploreDetail";
 import AddFeedForm from "./AddFeedForm";
-export { Home, Bookmark, Profile, Explore, ExploreDetail,AddFeedForm }
+import EditFeedForm from "./EditFeedForm";
+export { Home, Bookmark, Profile, Explore, ExploreDetail, AddFeedForm, EditFeedForm }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,29 +11,8 @@ import {
 import { ArrowLeft } from "iconsax-react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
-const AddBlogForm = () => {
-  const [loading, setLoading] = useState(false);
-  const handleUpload = async () => {
-    setLoading(true);
-    try {
-      await axios.post('https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore', {
-        image,
-        category: blogData.category,
-        content: blogData.content,
-        title: blogData.title,
-      })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      setLoading(false);
-      navigation.navigate('Explore');
-    } catch (e) {
-      console.log(e);
-    }
-  };
+const EditBlogForm = ({route}) => {
+  const {blogId} = route.params;
   const dataCategory = [
     { id: 1, name: "Modern" },
     { id: 2, name: "Tradisi" },
@@ -59,6 +38,52 @@ const AddBlogForm = () => {
   };
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getBlogById();
+  }, [blogId]);
+
+  const getBlogById = async () => {
+    try {
+      const response = await axios.get(
+        `https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore/${blogId}`,
+      );
+      setBlogData({
+        title : response.data.title,
+        content : response.data.content,
+        category : {
+            id : response.data.category.id,
+            name : response.data.category.name
+        }
+      })
+    setImage(response.data.image)
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      await axios
+        .put(`https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore/${blogId}`, {
+          image,
+          category: blogData.category,
+          content: blogData.content,
+          title: blogData.title,
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      setLoading(false);
+      navigation.navigate('Profile');
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -66,7 +91,7 @@ const AddBlogForm = () => {
           <ArrowLeft color={"black"} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={styles.title}>Tambahkan Tarian</Text>
+          <Text style={styles.title}>Edit Tarian</Text>
         </View>
       </View>
       <ScrollView
@@ -143,7 +168,7 @@ const AddBlogForm = () => {
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={handleUpload}>
+        <TouchableOpacity style={styles.button} onPress={handleUpdate}>
           <Text style={styles.buttonLabel}>Upload</Text>
         </TouchableOpacity>
       </View>
@@ -157,7 +182,7 @@ const AddBlogForm = () => {
   );
 };
 
-export default AddBlogForm;
+export default EditBlogForm;
 
 const styles = StyleSheet.create({
   container: {
