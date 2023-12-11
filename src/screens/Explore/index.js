@@ -1,40 +1,76 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, TextInput, ImageBackground, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ExploreTrendingList, KategoriTariList } from '../../../data';
 import { ListExploreCircle } from '../../components';
 import { AddCircle, Edit, Like1, SearchNormal, SearchNormal1 } from 'iconsax-react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-const navigation = useNavigation();
+import firestore from '@react-native-firebase/firestore';
 import axios from 'axios';
+const navigation = useNavigation();
 const ListSeniRupa = () => {
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataBlog = async () => {
-    try {
-      const response = await axios.get(
-        'https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore',
-      );
-      setBlogData(response.data);
-      setLoading(false)
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('blog')
+      .onSnapshot(querySnapshot => {
+        const blogs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          blogs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(blogs);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataBlog()
+      firestore()
+        .collection('blog')
+        .onSnapshot(querySnapshot => {
+          const blogs = [];
+          querySnapshot.forEach(documentSnapshot => {
+            blogs.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setBlogData(blogs);
+        });
       setRefreshing(false);
     }, 1500);
   }, []);
+  // const getDataBlog = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       'https://656d4f1ebcc5618d3c2305fa.mockapi.io/GinaristArt/explore',
+  //     );
+  //     setBlogData(response.data);
+  //     setLoading(false)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, [])
-  );
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   setTimeout(() => {
+  //     getDataBlog()
+  //     setRefreshing(false);
+  //   }, 1500);
+  // }, []);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getDataBlog();
+  //   }, [])
+  // );
   return (
     <View style={styles.headerSeniDaerah}>
       <ScrollView contentContainerStyle={listSeniRupa.scrollViewContent}

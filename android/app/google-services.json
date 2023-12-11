@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "525331168226",
+    "project_id": "ginarist",
+    "storage_bucket": "ginarist.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525331168226:android:3c878b47836ca28377d7bb",
+        "android_client_info": {
+          "package_name": "com.ginarist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqD1RNR5KCj5Ccs_AD5ReYn7GYCvOhn6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
