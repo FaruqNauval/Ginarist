@@ -1,8 +1,13 @@
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Setting2 } from 'iconsax-react-native';
-import React from 'react';
-import { ProfileData, BlogList } from '../../../data';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { BlogList } from '../../../data';
 import { ItemSmall } from '../../components';
+import firestore from "@react-native-firebase/firestore";
+import ActionSheet from 'react-native-actions-sheet';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const formatNumber = number => {
     if (number >= 1000000000) {
@@ -18,11 +23,58 @@ const formatNumber = number => {
 };
 
 const Profile = () => {
+    const navigation = useNavigation();
+    const [profileData, setProfileData] = useState(null);
+    const actionSheetRef = useRef(null);
+    const openActionSheet = () => {
+        actionSheetRef.current?.show();
+    };
+    const closeActionSheet = () => {
+        actionSheetRef.current?.hide();
+    };
+    useEffect(() => {
+        const user = auth().currentUser;
+        const fetchProfileData = () => {
+            try {
+                const user = auth().currentUser;
+                if (user) {
+                    const userId = user.uid;
+                    const userRef = firestore().collection('users').doc(userId);
+
+                    const unsubscribeProfile = userRef.onSnapshot(doc => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            setProfileData(userData);
+                        } else {
+                            console.error('Dokumen pengguna tidak ditemukan.');
+                        }
+                    });
+
+                    return () => {
+                        unsubscribeProfile();
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+        fetchProfileData();
+    }, []);
+    const handleLogout = async () => {
+        try {
+            closeActionSheet();
+            await auth().signOut();
+            await AsyncStorage.removeItem('userData');
+            navigation.replace('Login');
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
+            <TouchableOpacity style={styles.header} onPress={openActionSheet}>
                 <Setting2 color={'black'} variant="Linear" size={24} />
-            </View>
+            </TouchableOpacity>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
@@ -34,30 +86,25 @@ const Profile = () => {
                     <Image
                         style={profile.pic}
                         source={{
-                            uri: ProfileData.profilePict,
+                            uri: profileData?.photoUrl,
                         }}
                         resizeMode={'cover'}
                     />
-                    <View style={{ gap: 5, alignItems: 'center' }}>
-                        <Text style={profile.name}>{ProfileData.name}</Text>
-                        <Text style={profile.info}>
-                            Member since {ProfileData.createdAt}
-                        </Text>
-                    </View>
+                    <Text style={profile.name}>{profileData?.fullName}</Text>
                     <View style={{ flexDirection: 'row', gap: 20 }}>
                         <View style={{ alignItems: 'center', gap: 5 }}>
-                            <Text style={profile.sum}>{ProfileData.blogPosted}</Text>
+                            <Text style={profile.sum}>{profileData?.totalPost}</Text>
                             <Text style={profile.tag}>Posted</Text>
                         </View>
                         <View style={{ alignItems: 'center', gap: 5 }}>
                             <Text style={profile.sum}>
-                                {formatNumber(ProfileData.following)}
+                                {profileData?.followingCount}
                             </Text>
                             <Text style={profile.tag}>Following</Text>
                         </View>
                         <View style={{ alignItems: 'center', gap: 5 }}>
                             <Text style={profile.sum}>
-                                {formatNumber(ProfileData.follower)}
+                                {profileData?.followersCount}
                             </Text>
                             <Text style={profile.tag}>Follower</Text>
                         </View>
@@ -66,12 +113,49 @@ const Profile = () => {
                         <Text style={profile.buttonText}>Edit Profile</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{ paddingVertical: 10, gap: 10 }}>
-                    {BlogList.map((item, index) => (
-                        <ItemSmall item={item} key={index} />
-                    ))}
-                </View>
             </ScrollView>
+            <ActionSheet
+                ref={actionSheetRef}
+                containerStyle={{
+                    borderTopLeftRadius: 25,
+                    borderTopRightRadius: 25,
+                }}
+                indicatorStyle={{
+                    width: 100,
+                }}
+                gestureEnabled={true}
+                defaultOverlayOpacity={0.3}>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                    }}
+                    onPress={handleLogout}>
+                    <Text
+                        style={{
+                            color: 'black',
+                            fontSize: 18,
+                        }}>
+                        Log out
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                    }}
+                    onPress={closeActionSheet}>
+                    <Text
+                        style={{
+                            color: 'red',
+                            fontSize: 18,
+                        }}>
+                        Cancel
+                    </Text>
+                </TouchableOpacity>
+            </ActionSheet>
         </View>
     );
 };
@@ -94,7 +178,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        
+
         color: 'black',
     },
 });
@@ -103,22 +187,22 @@ const profile = StyleSheet.create({
     name: {
         color: 'black',
         fontSize: 20,
-        
+
         textTransform: 'capitalize'
     },
     info: {
         fontSize: 12,
-        
+
         color: 'grey',
     },
     sum: {
         fontSize: 16,
-        
+
         color: 'black',
     },
     tag: {
         fontSize: 14,
-        
+
         color: 'rgba(128, 128, 128, 0.5)',
     },
     buttonEdit: {
@@ -129,7 +213,7 @@ const profile = StyleSheet.create({
     },
     buttonText: {
         fontSize: 14,
-        
+
         color: 'black',
     },
 });

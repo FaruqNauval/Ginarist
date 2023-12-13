@@ -1,8 +1,8 @@
 import React from 'react';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Bookmark, Profile, Explore, ExploreDetail, AddFeedForm, EditFeedForm} from '../screens';
-import {Home2, LocationDiscover, Receipt21, ProfileCircle} from 'iconsax-react-native'; 
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Home, Bookmark, Profile, Explore, ExploreDetail, AddFeedForm, EditFeedForm, SplashScreen, Register, Login } from '../screens';
+import { Home2, LocationDiscover, Receipt21, ProfileCircle } from 'iconsax-react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,7 +28,7 @@ function MainApp() {
         component={Home}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({focused, color}) => (
+          tabBarIcon: ({ focused, color }) => (
             <Home2
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
@@ -43,7 +43,7 @@ function MainApp() {
         component={Explore}
         options={{
           tabBarLabel: 'Explore',
-          tabBarIcon: ({focused, color}) => (
+          tabBarIcon: ({ focused, color }) => (
             <LocationDiscover
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
@@ -58,7 +58,7 @@ function MainApp() {
         component={Bookmark}
         options={{
           tabBarLabel: 'Bookmark',
-          tabBarIcon: ({focused, color}) => (
+          tabBarIcon: ({ focused, color }) => (
             <Receipt21
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
@@ -73,7 +73,7 @@ function MainApp() {
         component={Profile}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({focused, color}) => (
+          tabBarIcon: ({ focused, color }) => (
             <ProfileCircle
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
@@ -88,21 +88,21 @@ function MainApp() {
 }
 const Router = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName='SplashScreen'>
       <Stack.Screen
         name="MainApp"
         component={MainApp}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ExploreDetail"
         component={ExploreDetail}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -114,7 +114,7 @@ const Router = () => {
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
@@ -130,7 +130,22 @@ const Router = () => {
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
-    );
+  );
 };
 export default Router;
